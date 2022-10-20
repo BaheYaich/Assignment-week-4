@@ -3,6 +3,9 @@ const calculator = document.querySelector('#CalculatorBody')
 const keys = calculator.querySelector('#CalculatorKeys')
 const display = calculator.querySelector('#CalculatorDisplay')
 const operatorKeys = keys.querySelectorAll('[data-type="operator"]')
+const clearKey = document.querySelector('[data-type="clear"]')
+const equalKey = document.querySelector('[data-type="equal"]')
+
 
 keys.addEventListener('click', event => {
     if (!event.target.closest('button')) return
@@ -24,11 +27,18 @@ keys.addEventListener('click', event => {
     }
     // Check if type is operator
     if (type === 'operator') {
-        operatorKeys.forEach(el => { el.dataset.state = '' })
+        const currentActiveOperator = calculator.querySelector('[data-state="selected"]')
+        if (currentActiveOperator){
+            currentActiveOperator.dataset.state = ''
+        }        
         key.dataset.state = 'selected'
-
         calculator.dataset.firstNumber = displayValue
         calculator.dataset.operator = key.dataset.key
+        // if a data type number is clicked after state is deselected
+        
+        // if a data type operator is clicked again, operate (doesn't work yet)
+    }else if (previousKeyType === 'operator'){
+        key.dataset.state = ''
     }
 
     if (type === 'equal') {
@@ -37,12 +47,18 @@ keys.addEventListener('click', event => {
         const operator = calculator.dataset.operator
         const secondNumber = displayValue
         display.textContent = operate(firstNumber, operator, secondNumber)
+        console.log("displaying ", display.textContent);
+        const resultInMemory = display.textContent;
+        console.log("result in memory ", resultInMemory);
+        console.log("first is ", firstNumber);
+        console.log("second is ", secondNumber);
     }
 
     if (type === 'clear') {
         display.textContent = '0'
         delete calculator.dataset.firstNumber
         delete calculator.dataset.operator
+        delete calculator.dataset.secondNumber
     }
 
     calculator.dataset.previousKeyType = type
@@ -60,66 +76,8 @@ function operate(firstNumber, operator, secondNumber) {
 
 function clearCalculator() {
     // Press the clear key
-    const clearKey = document.querySelector('[data-type="clear"]')
     clearKey.click()
 
     // Clear operator states
     operatorKeys.forEach(key => { key.dataset.state = '' })
 }
-
-function testClearKey() {
-    clearCalculator()
-    console.assert(display.textContent === '0', 'Clear key. Display should be 0')
-    console.assert(!calculator.dataset.firstNumber, 'Clear key. No first number remains')
-    console.assert(!calculator.dataset.operator, 'Clear key. No operator remains')
-}
-
-function testKeySequence(test) {
-    // Press keys
-    test.keys.forEach(key => {
-        document.querySelector(`[data-key="${key}"]`).click()
-    })
-
-    // Assertion
-    console.assert(display.textContent === test.value, test.message)
-
-    // Clear calculator
-    clearCalculator()
-    testClearKey()
-}
-
-const tests = [{
-    keys: ['1'],
-    value: '1',
-    message: 'Click 1'
-}, {
-    keys: ['1', '5'],
-    value: '15',
-    message: 'Click 15'
-}, {
-    keys: ['1', '5', '9'],
-    value: '159',
-    message: 'Click 159'
-}, {
-    keys: ['2', '4', 'plus', '7', 'equal'],
-    value: '31',
-    message: 'Calculation with plus'
-}, {
-    keys: ['3', 'minus', '7', '0', 'equal'],
-    value: '-67',
-    message: 'Calculation with minus'
-}, {
-    keys: ['1', '5', 'times', '9', 'equal'],
-    value: '135',
-    message: 'Calculation with times'
-}, {
-    keys: ['9', 'divide', '3', 'equal'],
-    value: '3',
-    message: 'Calculation with divide'
-}, {
-    keys: ['9', 'divide', '0', 'equal'],
-    value: 'Infinity',
-    message: 'Calculation. Divide by 0'
-}]
-
-tests.forEach(testKeySequence)

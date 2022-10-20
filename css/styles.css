@@ -61,9 +61,9 @@ body {
     gap: 2px;
     grid-template-columns: repeat(4, auto);
     grid-template-areas:
-        ". . . ."
-        "seven eight nine equal"
-        "four five six equal"
+        ". . . plus"
+        "seven eight nine plus"
+        "four five six plus"
         "one two three equal"
         "zero decimal clear equal"
 }
@@ -119,9 +119,13 @@ body {
     grid-area: clear
 }
 
+[data-key="plus"] {
+    grid-area: plus
+}
+
 [data-key="equal"] {
     grid-area: equal;
-    background-color: var(--orange-400);
+    background-color: var(--orange-400)
 }
 
 [data-key="equal"]:active {
@@ -129,20 +133,20 @@ body {
 }
 
 [data-type="operator"] {
-    background: var(--grey-100);
+    background: var(--grey-100)
 }
 
 [data-type="number"],
 [data-type="clear"] {
-    background: #fff;
+    background: #fff
 }
 
 [data-type="operator"]:active,
 [data-type="number"]:active,
 [data-type="clear"]:active {
-    background: var(--grey-200);
+    background: var(--grey-200)
 }
 
 [data-state="selected"] {
-    background: var(--grey-200);
+    background: var(--grey-200)
 }
