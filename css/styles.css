@@ -1,25 +1,19 @@
 :root {
-    --orange-050: #ffe8d9;
-    --orange-100: #ffd0b5;
-    --orange-200: #ffb088;
-    --orange-300: #ff9466;
+    --not-allowed: #c87b7b;
+    --red-900 : #ac1b1b;
+
     --orange-400: #f9703e;
     --orange-500: #f35627;
-    --orange-600: #de3a11;
-    --orange-700: #c52707;
-    --orange-800: #ad1d07;
-    --orange-900: #841003;
 
     --grey-050: #f5f7fa;
     --grey-100: #e4e7eb;
     --grey-200: #cbd2d9;
-    --grey-300: #9aa5b1;
-    --grey-400: #7b8794;
+    --grey-300: #7e7e7e;
     --grey-500: #616e7c;
-    --grey-600: #52606d;
-    --grey-700: #3e4c59;
-    --grey-800: #323f4b;
-    --grey-900: #1f2933;
+    --grey-800: #202020;
+
+    --black: #000;
+    --white: #fff;
 }
 
 /* Base styles */
@@ -32,7 +26,7 @@ html {
 
 body {
     display: flex;
-    background-image: linear-gradient(236deg, #74ebd5, #acb6e5);
+    background: var(--black);
     justify-content: center;
     align-items: center;
     height: 100vh
@@ -41,35 +35,38 @@ body {
 
 /* Calculator */
 #CalculatorBody {
-    box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.3);
-    border-radius: 0.5em;
     overflow: hidden
 }
 
 #CalculatorDisplay {
-    background-color: var(--grey-900);
+    background-color: var(--black);
     color: var(--grey-050);
-    width: 16.25rem;
-    padding: 0.75rem 1rem;
+    width: 18rem;
+    padding: 1.25rem 1rem;
     text-align: right;
-    font-size: 1rem
+    font-size: 3rem
 }
 
 #CalculatorKeys {
-    background: var(--grey-200);
+    background: var(--black);
     display: grid;
-    gap: 2px;
+    gap: 1rem;
     grid-template-columns: repeat(4, auto);
     grid-template-areas:
-        ". . . plus"
+        ". . . delete"
         "seven eight nine plus"
         "four five six plus"
         "one two three equal"
         "zero decimal clear equal"
 }
 
-#CalculatorKeys > button {
-    border: 0
+#CalculatorKeys button {
+    font-size: 1.6em;
+    font-weight: bold;
+    border: 0;
+    border-radius: 2.5rem;
+    padding: 0.5em 0.85em;
+    line-height: 1.4241
 }
 
 [data-key="1"] {
@@ -123,30 +120,66 @@ body {
     grid-area: plus
 }
 
+[data-key="delete"] {
+    grid-area: delete
+}
+
 [data-key="equal"] {
     grid-area: equal;
+    color: var(--white);
     background-color: var(--orange-400)
 }
 
-[data-key="equal"]:active {
-    background-color: var(--orange-500);
-}
-
 [data-type="operator"] {
-    background: var(--grey-100)
+    color: var(--white);
+    background-color: var(--orange-400)
 }
 
-[data-type="number"],
-[data-type="clear"] {
-    background: #fff
+[data-type="number"]
+{
+    color: var(--white);
+    background: var(--grey-800)
 }
 
 [data-type="operator"]:active,
-[data-type="number"]:active,
+[data-type="number"]:active
+{
+    color: var(--orange-400);
+    background-color: var(--white);
+}
+
+[data-type="clear"] {
+    color: var(--white);
+    background: var(--grey-300)
+}
+
 [data-type="clear"]:active {
-    background: var(--grey-200)
+    color: var(--grey-300);
+    background: var(--white)
+}
+
+[data-key="equal"]:active {
+    color: var(--orange-400);
+    background-color: var(--white);
 }
 
 [data-state="selected"] {
-    background: var(--grey-200)
+    color: var(--orange-400);
+    background-color: var(--white);
+}
+
+[data-type="delete"] {
+    color: var(--white);
+    background: var(--red-900)
+}
+
+[data-type="delete"]:active {
+    color: var(--red-900);
+    background: var(--white)
+}
+
+.disabled {
+    pointer-events: none;
+    user-select: none;
+    background: var(--not-allowed)
 }
