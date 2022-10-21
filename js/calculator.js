@@ -50,7 +50,7 @@ keys.addEventListener("click", (event) => {
     // Checks if the last result was the end of an operation and resets the dataset value for a new one
     if (previousKey === "equal") {
       display.textContent = "";
-      delete calculator.dataset.firstNumber;
+      
       delete calculator.dataset.operator;
       delete calculator.dataset.secondNumber;
       display.textContent = keyValue;
