@@ -9,7 +9,6 @@ const equalKey = calculator.querySelector('[data-type="equal"]')
 const deleteKey = calculator.querySelector('[data-type="delete"]')
 const decimalKey = calculator.querySelector('.decimal')
 
-
 // Handling all clicks on the keys object
 keys.addEventListener("click", (event) => {
   if (!event.target.closest("button")) return
@@ -157,6 +156,8 @@ keys.addEventListener("click", (event) => {
     delete calculator.dataset.secondNumber
     delete calculator.dataset.lastOperator
     delete calculator.dataset.lastResult
+
+    clearCalculator()
   }
 
   if (type === "delete") {
@@ -246,7 +247,7 @@ document.onkeydown = function(event) {
 
   // Adding support for ESC to clear all variables
   if (keyPress === 'Escape'){
-    clearKey.click();
+    clearCalculator()
   }
 }
 
