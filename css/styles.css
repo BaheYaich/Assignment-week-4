@@ -47,6 +47,13 @@ body {
     font-size: 3rem
 }
 
+#CalculatorHistory {
+    width: 18rem;
+    color:white;
+    font-weight: bold;
+    text-align: right
+}
+
 #CalculatorKeys {
     background: var(--black);
     display: grid;

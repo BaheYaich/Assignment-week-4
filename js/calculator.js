@@ -2,6 +2,7 @@
 const calculator = document.querySelector("#CalculatorBody")
 const keys = calculator.querySelector("#CalculatorKeys");
 const display = calculator.querySelector("#CalculatorDisplay")
+const history = calculator.querySelector("#CalculatorHistory")
 const operatorKeys = keys.querySelectorAll('[data-type="operator"]')
 const clearKey = calculator.querySelector('[data-type="clear"]')
 const equalKey = calculator.querySelector('[data-type="equal"]')
@@ -19,6 +20,9 @@ keys.addEventListener("click", (event) => {
   const { previousKeyType, previousKey } = calculator.dataset
   let changed = false
 
+  // Updates history display
+  history.innerHTML = history.innerHTML + key.textContent
+
   // Check if decimal key is pressed once to prevent adding more than one decimal point when adding a number
   if (key.classList.contains('decimal')){
       key.classList.add("disabled")
@@ -31,37 +35,49 @@ keys.addEventListener("click", (event) => {
     }
   }
 
-  // Check if operator is clicked twice
+  // Check if the same operator is clicked twice in a row
   if (type === 'operator' && previousKeyType === 'operator') {
     if (key.dataset.key === previousKey) {
-      return;
+      return
     }
 
     // Check is the operator has changed to a different one
-    changed = true;
+    changed = true
   }
 
   // Check if type is number
   if (type === "number") {
+    // Checks if the last result was the end of an operation and resets the dataset value for a new one
     if (previousKey === "equal") {
-      clearCalculator()
-      display.textContent = ""
-      console.log("PreviousKey is now Equal")
-
-    }
-
-    if (displayValue === "0" || previousKeyType === "operator") {
-      display.textContent = keyValue
+      display.textContent = "";
+      delete calculator.dataset.firstNumber;
+      delete calculator.dataset.operator;
+      delete calculator.dataset.secondNumber;
+      display.textContent = keyValue;
     } else {
-      display.textContent = displayValue + keyValue
+      // Default regular behavior
+      if (displayValue === "0" || previousKeyType === "operator") {
+        display.textContent = keyValue;
+      } else {
+        display.textContent = displayValue + keyValue;
+      }
+
+      // Clear operator states every time a number type is clicked
+      operatorKeys.forEach((key) => {
+        key.dataset.state = "";
+      });
     }
-
-    // Clear operator states every time a number type is clicked
-    operatorKeys.forEach(key => { key.dataset.state = '' })
   }
-
   // Check if type is operator
   if (type === "operator") {
+    // Checks if the last result was the end of an operation and resets the dataset value for a new one
+    if (previousKey === "equal") {
+      calculator.dataset.firstNumber = displayValue;
+      delete calculator.dataset.secondNumber;
+      delete calculator.dataset.lastOperator;
+      delete calculator.dataset.operator;
+    }
+
     // Resets the decimal key to be used for new input
     decimalKey.classList.remove("disabled")
 
@@ -89,7 +105,6 @@ keys.addEventListener("click", (event) => {
         const result = operate(calculator.dataset.firstNumber, calculator.dataset.lastOperator, displayValue)
         display.textContent = result
         calculator.dataset.firstNumber = result
-        console.log("firstnumber = ", calculator.dataset.firstNumber," ", calculator.dataset.operator, " secondnumber = ", calculator.dataset.secondNumber)
       }
       // If neither cases apply, firstNumber is now the displayValue
       else {
@@ -105,24 +120,33 @@ keys.addEventListener("click", (event) => {
 
   // Check if type is equals
   if (type === "equal") {
-    // Perform a calculation
-    const firstNumber = calculator.dataset.firstNumber;
-    const operator = calculator.dataset.operator;
-    const secondNumber = displayValue;
-
-    // Handling multiple equal presses
-    if (previousKey === "equal") {
+    if (
+      calculator.dataset.firstNumber === undefined &&
+      calculator.dataset.secondNumber === undefined &&
+      calculator.dataset.operator === undefined
+    ) {
       return
     }
-
-    // Updates the displayed value
-    display.textContent = operate(firstNumber, operator, secondNumber);
-    console.log("firstnumber = ", firstNumber," ", operator, " secondnumber = ", secondNumber)
+     // Handling multiple equal presses
+     if (previousKey === "equal") {
+        const firstNumber = displayValue;
+        const operator = calculator.dataset.operator
+        const secondNumber = calculator.dataset.secondNumber
+        display.textContent = operate(firstNumber, operator, secondNumber)
+    } else {
+      const firstNumber = calculator.dataset.firstNumber
+      const operator = calculator.dataset.operator
+      const secondNumber = displayValue
+      calculator.dataset.secondNumber = secondNumber
+      // Updates the displayed value
+      display.textContent = operate(firstNumber, operator, secondNumber)
+    }
   }
 
   // Check if clear key is pushed
   if (type === "clear") {
     display.textContent = "0"
+    history.innerHTML = ""
 
     // Equals key reinitializes disabled
     equalKey.classList.add("disabled")
@@ -131,13 +155,14 @@ keys.addEventListener("click", (event) => {
     delete calculator.dataset.firstNumber
     delete calculator.dataset.operator
     delete calculator.dataset.secondNumber
-    delete calculator.dataset.previousKeyType
-    delete calculator.dataset.previousKey
+    delete calculator.dataset.lastOperator
+    delete calculator.dataset.lastResult
   }
 
   if (type === "delete") {
     // Delete the last value typed or pressed
     display.textContent = display.textContent.toString().slice(0, -1)
+    calculator.dataset.secondNumber = display.textContent
     // If the last digit is erased, impose a 0
     if (display.textContent.length === 0) {
       display.textContent = "0"
@@ -198,6 +223,9 @@ document.onkeydown = function(event) {
     }
     if (keyPress === '/') { 
       keys.querySelector('[data-key="divide"]').click()
+    }
+    if (keyPress === '.') { 
+      keys.querySelector('.decimal').click()
     }
   }
 
