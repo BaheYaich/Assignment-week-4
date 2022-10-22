@@ -44,19 +44,25 @@ body {
     width: 18rem;
     padding: 1.25rem 1rem;
     text-align: right;
-    font-size: 3rem
+    font-size: 3rem;
+    overflow: hidden;
+    text-overflow: ellipsis
 }
 
 #CalculatorHistory {
     width: 18rem;
     color:white;
     font-weight: bold;
-    text-align: right
+    text-align: right;
+    padding: 0 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis
 }
 
 #CalculatorKeys {
     background: var(--black);
     display: grid;
+    padding: 1rem;
     gap: 1rem;
     grid-template-columns: repeat(4, auto);
     grid-template-areas:
@@ -68,7 +74,7 @@ body {
 }
 
 #CalculatorKeys button {
-    font-size: 1.6em;
+    font-size: 1.4em;
     font-weight: bold;
     border: 0;
     border-radius: 2.5rem;
